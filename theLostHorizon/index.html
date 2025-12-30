@@ -13,8 +13,8 @@
         }
 
         img {
-            pointer-events: none;
-            user-select: none;
+            /* pointer-events: none; */
+            /* user-select: none; */
         }
 
         div {
@@ -33,7 +33,7 @@
             height: 100vh;
             background-color: #f1f1f1;
             overflow: hidden;
-            font-family: 'PP Editorial Old', italic, sans-serif;
+            font-family: 'PP Editorial Old', thin, italic, sans-serif;
             font-style: italic;
             font-size: .25rem;
         }
@@ -50,32 +50,53 @@
         .photos_line {
             font-size: 1px;
             height: 100%;
-            margin-top: 2em;
-            margin-bottom: 2em;
+            margin-top: 50em;
+            margin-bottom: 50em;
             flex-shrink: 0;
-            width: 100%;
+            width: 80%;
         }
 
         .photos_line_photo {
             font-size: 1px;
-            /* width: 100%; */
+            width: 15%;
             height: 80%;
             margin-left: 50em;
             margin-right: 50em;
             /* border-radius: 15em; */
-            background-color: #000000;
+            /* background-color: #000000; */
             overflow: hidden;
             flex-shrink: 0;
         }
 
         .photos_line_photo img {
             height: 50%;
+            width: 100%;
             transition: 0.3s ease;
         }
 
         .photos_line_photo:hover img {
             transform: scale(1.2);
         }
+
+        .photo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.photo-overlay.active {
+  display: flex;
+}
+
+.photo-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+}
 
         @media screen and (max-aspect-ratio: 1.5/1) {
 
@@ -128,10 +149,7 @@
     <div class="header">
         <div class="text">
             <!-- <h1 class="name">Nio Jin</h1> -->
-            <p class="text">Nio Jin is a communication designer raised in Beijing. They are currently based in New York, pursuing a BFA in Communication Design at Parsons School of Design. 
-Nio Jin is a digital alchemist constructing poetic systems where logic simulates life and interaction becomes a ritual of perception.
-Their practice begins in dissolution: a quiet rejection of clarity, utility, and surface logic. They do not take meaning for granted. They dismantle it—gently, precisely, and with intent. What appears static may evolve; what seems direct may loop.
-Their systems resist passive viewing. Instead, they quietly demand participation—offering neither clear entry points nor promised answers. Meaning is never delivered; it is discovered—through doubt, detour, or play. Nio is drawn to slow resonance, perceptual slippage, and the thrill of decoding meaning through experience.</p>
+            <p class="text">A set of publications staged as documents in a folder, each exploring how people question the horizon line and the “construction” of the world.</p>
         </div>
     </div>
     <div class="contact">
@@ -140,22 +158,59 @@ Their systems resist passive viewing. Instead, they quietly demand participation
     <div class="photos">
         <div class="photos_line">
             <div class="photos_line_photo">
-                <img src="photos/allFolder.jpg" />
+                <img src="photos/photoA1.jpg" />
             </div>
             <div class="photos_line_photo">
-                <img src="photos/alphaExpand.jpg" />
+                <img src="photos/photoA2.jpg" />
             </div>
             <div class="photos_line_photo">
-                <img src="photos/betaFullExpand.jpg" />
+                <img src="photos/photoA3.jpg" />
             </div>
             <div class="photos_line_photo">
-                <img src="photos/delta7.jpg" />
+                <img src="photos/photoA4.jpg" />
             </div>
             <div class="photos_line_photo">
-                <img src="photos/ScanALLE.jpg" />
+                <img src="photos/photoA5.jpg" />
+            </div>
+        </div>
+        <div class="photos_line">
+            <div class="photos_line_photo">
+                <img src="photos/photoB1.jpg" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photoB2.jpg" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photoB3.jpg" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photoB4.jpg" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photoB5.jpg" />
+            </div>
+        </div>
+        <div class="photos_line">
+            <div class="photos_line_photo">
+                <img src="photos/photoC1.jpg" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photoC2.jpg" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photoC3.jpg" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photoC4.jpg" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photoC5.jpg" />
             </div>
         </div>
     </div>
+    <div class="photo-overlay" id="photoOverlay">
+        <img id="photoOverlayImg" />
+      </div>
 </body>
 <script>
     const photobox = {
@@ -251,6 +306,28 @@ Their systems resist passive viewing. Instead, they quietly demand participation
         }
     };
     photobox.init();
+    
+    const overlay = document.getElementById("photoOverlay");
+const overlayImg = document.getElementById("photoOverlayImg");
+
+document.querySelectorAll(".photos_line_photo").forEach(box => {
+  box.addEventListener("click", e => {
+    // 防止拖拽系统误判为移动
+    if (photobox.if_movable) return;
+
+    const img = box.querySelector("img");
+    overlayImg.src = img.src;
+    overlay.classList.add("active");
+
+    // 禁止拖拽
+    photobox.if_movable = false;
+  });
+});
+
+overlay.addEventListener("click", () => {
+  overlay.classList.remove("active");
+  overlayImg.src = "";
+});
 </script>
 
 </html>

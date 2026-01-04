@@ -42,7 +42,6 @@
             position: absolute;
             flex-direction: column;
             overflow: hidden;
-            cursor: pointer;
             /* width: 80%; */
             /* border: .025rem solid #000000; */
             }
@@ -75,7 +74,40 @@
 
         .photos_line_photo:hover img {
             transform: scale(1.2);
+            transition: transform 0.3s ease;
         }
+
+        /* 1. 隐藏默认光标 */
+.photos_line_photo:hover {
+    cursor: none; 
+}
+
+.photos_line_photo:hover a {
+    cursor: none; 
+}
+
+/* 2. 自定义光标样式 */
+#custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999; 
+    /* background-color: #333; */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    mix-blend-mode: difference;
+    
+    pointer-events: none; /* 关键：确保不干扰下方的点击事件 */
+    
+    opacity: 0; 
+    transform: translate(-50%, -50%); 
+    transition: opacity 0.2s ease; 
+}
+
+
 
         @media screen and (max-aspect-ratio: 1.5/1) {
 
@@ -130,9 +162,7 @@ a img {
 }
 
 
-.image-link:hover {
-    cursor: theAfternoonWeTriedSuicide;
-}
+
 
     </style>
 </head>
@@ -150,37 +180,29 @@ Their systems resist passive viewing. Instead, they quietly demand participation
     <div class="contact">
         <p class="contact_text">contact</p>
     </div>
+    <div id="custom-cursor"></div>
     <div class="photos">
         <div class="photos_line">
-            <div class="photos_line_photo">
+            <div class="photos_line_photo" data-cursor-text="The Afternoon We Tried Suicide">
                 <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
-                    <img src="photos/photo1.png" alt="点击跳转的图片" />
+                    <img src="photos/photo1.png" />
                 </a>
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo2.jpg" />
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo3.png" />
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo4.png" />
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo5.png" />
             </div>
             <div class="photos_line_photo">
                 <img src="photos/photo6.png" />
             </div>
-            <!-- <div class="photos_line_photo">
-                <img src="photos/photo7.png" />
+            <div class="photos_line_photo">
+                <img src="photos/photo6.png" />
             </div>
             <div class="photos_line_photo">
                 <img src="photos/photo7.png" />
             </div>
             <div class="photos_line_photo">
                 <img src="photos/photo7.png" />
-            </div> -->
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo7.png" />
+            </div>
         </div>
         <div class="photos_line">
             <div class="photos_line_photo">
@@ -259,15 +281,6 @@ Their systems resist passive viewing. Instead, they quietly demand participation
             <div class="photos_line_photo">
                 <img src="photos/photo27.png" />
             </div>
-            <!-- <div class="photos_line_photo">
-                <img src="photos/photo28.png" />
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo7.png" />
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo7.png" />
-            </div> -->
         </div>
         <!-- <div class="photos_line">
             <div class="photos_line_photo">
@@ -288,7 +301,7 @@ Their systems resist passive viewing. Instead, they quietly demand participation
             <div class="photos_line_photo">
                 <img src="photos/photo27.png" />
             </div>
-            <!-- <div class="photos_line_photo">
+            <div class="photos_line_photo">
                 <img src="photos/photo28.png" />
             </div>
             <div class="photos_line_photo">
@@ -297,7 +310,7 @@ Their systems resist passive viewing. Instead, they quietly demand participation
             <div class="photos_line_photo">
                 <img src="photos/photo7.png" />
             </div> -->
-        </div> -->
+        </div> 
     </div>
 </body>
 <script>
@@ -394,6 +407,30 @@ Their systems resist passive viewing. Instead, they quietly demand participation
         }
     };
     photobox.init();
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+    const customCursor = document.getElementById('custom-cursor');
+    const photoContainers = document.querySelectorAll('.photos_line_photo');
+    document.addEventListener('mousemove', (e) => {
+        customCursor.style.left = e.clientX + 'px';
+        customCursor.style.top = e.clientY + 'px';
+    });
+
+    photoContainers.forEach(container => {
+        container.addEventListener('mouseenter', () => {
+            const cursorText = container.getAttribute('data-cursor-text');
+            
+            customCursor.textContent = cursorText;
+            
+            customCursor.style.opacity = '1';
+        });
+
+        container.addEventListener('mouseleave', () => {
+            customCursor.style.opacity = '0';
+        });
+    });
+});
 </script>
 
 </html>

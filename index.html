@@ -47,6 +47,7 @@ font-style: normal;
             flex-direction: column;
             overflow: hidden;
             /* width: 80%; */
+            
             /* border: .025rem solid #000000; */
             }
 
@@ -61,12 +62,16 @@ font-style: normal;
 
         .photos_line_photo {
             font-size: 1px;
-            width: 36em;
-            height: 90%;
+            width: 75em;
+            /* height: 90%; */
+            aspect-ratio: 1 / 1;
             margin-left: 75em;
             margin-right: 75em;
             /* border-radius: 15em; */
-            background-color: #000000;
+            /* background-color: #000000; */
+            border-color: #000000;
+            border-style: dashed;
+            border-width: .0125rem;
             overflow: hidden;
             flex-shrink: 0;
         }
@@ -90,7 +95,7 @@ font-style: normal;
     cursor: none; 
 }
 
-/* 2. 自定义光标样式 */
+
 #custom-cursor {
     position: fixed;
     top: 0;
@@ -99,7 +104,7 @@ font-style: normal;
     /* background-color: #333; */
     color: white;
     padding: 5px 10px;
-    font-size: 4em;
+    font-size: 1.25rem;
     white-space: nowrap;
     mix-blend-mode: difference;
     
@@ -138,8 +143,8 @@ font-style: normal;
 
        .text{
         font-size: 1rem;
-        font-family: 'PP Editorial Old', italic, sans-serif;
-        font-style: italic;
+        /* font-family: 'PP Editorial Old', italic, sans-serif; */
+        /* font-style: italic; */
        }
 
        .contact {
@@ -159,6 +164,9 @@ a {
     color:black;
     text-decoration: none;
     font-size: 1rem;
+    font-family: "megumi", sans-serif;
+font-weight: 200;
+font-style: italic;
 }
 
 
@@ -170,7 +178,10 @@ a img {
 }
 
 .contact_text {
-    font-size: 2rem;
+    font-size: 1rem;
+    font-size: italic;
+    font-family: "megumi", sans-serif;
+font-weight: 200;
 }
 
 
@@ -188,19 +199,21 @@ a img {
     </div>
     <div class="contact">
         <a class="contact" href="https://drive.google.com/file/d/1iJO6BU_6_0B6j8qWHyJ5oZa6vEUjmAem/view?usp=sharing" target="_blank">
-            <p class="contact_text">...</p>
+            <p class="contact_text">Contact</p>
         </a>
     </div>
     <div id="custom-cursor"></div>
     <div class="photos">
         <div class="photos_line">
-            <div class="photos_line_photo" data-cursor-text="The Afternoon We Tried Suicide">
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
                 <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
                     <img src="photos/photo1.png" />
                 </a>
             </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo6.png" />
+            <div class="photos_line_photo" data-cursor-text="the [Lost H]orizon.1">
+                <a class="image-link" href="https://ni0j.github.io/theLostHorizon1/">
+                    <img src="photos/photo2.jpg" />
+                </a>
             </div>
             <div class="photos_line_photo">
                 <img src="photos/photo6.png" />

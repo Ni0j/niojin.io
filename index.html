@@ -19,6 +19,15 @@
             user-select: none;
         }
 
+        img {
+        filter: grayscale(100%); 
+        transition: filter 0.5s ease; 
+        }
+
+        img:hover {
+        filter: grayscale(0%);
+        }
+
         div {
             display: flex;
             justify-content: center;
@@ -49,8 +58,8 @@ font-style: normal;
             overflow: hidden;
             width: 60%; 
             
-            border-left: .025rem dotted #000000;
-border-right: .025rem dotted #000000;
+            /* border-left: .025rem dotted #000000;
+border-right: .025rem dotted #000000; */
             }
 
         .photos_line {
@@ -185,7 +194,62 @@ a img {
     display: block; 
 }
 
+.side-text {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: #000;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre; /* 保留换行 */
+    font-family: "megumi", sans-serif;
+    font-weight: 200;
+    font-style: italic;
+}
 
+.side-text--left {
+    left: calc(50% - 33.33% - 1.5rem);
+}
+
+.side-text--right {
+    left: calc(50% + 33.33%); 
+}
+
+/* 移动端隐藏 */
+@media screen and (max-width: 768px) {
+    .side-text {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: #000;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre; /* 保留换行 */
+    font-family: "megumi", sans-serif;
+    font-weight: 200;
+    font-style: italic;
+}
+
+.side-text--left {
+    left: calc(50% - 43% - 1.5rem);
+}
+
+.side-text--right {
+    left: calc(50% + 43%); 
+}
+}
 
 @media screen and (max-width: 768px) {
     
@@ -625,6 +689,19 @@ function positionElements() {
     window.addEventListener('resize', () => {
         setTimeout(positionElements, 100);
     });
+
+    function createSideText() {
+        const photos = document.querySelector('.photos');
+        const text = '¿ ?\n'.repeat(50); // 重复足够多行
+
+        ['left', 'right'].forEach(side => {
+            const el = document.createElement('div');
+            el.className = `side-text side-text--${side}`;
+            el.textContent = text;
+            document.body.appendChild(el);
+        });
+    }
+    createSideText();
 </script>
 
 </html>

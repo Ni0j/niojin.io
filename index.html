@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="https://use.typekit.net/bqk8rmx.css">
     <script src="gsap.js"></script>
+    <script src="https://webgazer.cs.brown.edu/webgazer.js"></script>
     <style>
         * {
             padding: 0;
@@ -52,11 +53,28 @@ font-style: normal;
             font-size: .25rem;
         }
 
+
         .photos {
             position: absolute;
             flex-direction: column;
             overflow: hidden;
-            width: 60%; 
+            width: 60%;
+            height: 100%; 
+
+            -webkit-mask-image: linear-gradient(
+                to bottom,
+                transparent 0%,
+                black 10%,
+                black 90%,
+                transparent 100%
+            );
+            mask-image: linear-gradient(
+                to bottom,
+                transparent 0%,
+                black 10%,
+                black 90%,
+                transparent 100%
+            )
             
             /* border-left: .025rem dotted #000000;
 border-right: .025rem dotted #000000; */
@@ -65,19 +83,19 @@ border-right: .025rem dotted #000000; */
         .photos_line {
             font-size: 1px;
             height: 40em;
-            margin-top: 50em;
-            margin-bottom: 50em;
+            margin-top: 75em;
+            margin-bottom: 75em;
             flex-shrink: 0;
             width: 100%;
         }
 
         .photos_line_photo {
             font-size: 1px;
-            width: 75em;
+            width: 135em;
             /* height: 90%; */
             aspect-ratio: 1 / 1;
-            margin-left: 75em;
-            margin-right: 75em;
+            margin-left: 45em;
+            margin-right: 45em;
             /* border-radius: 15em; */
             /* background-color: #000000; */
             border-color: #f1f1f1;
@@ -203,7 +221,7 @@ a img {
     flex-direction: column;
     align-items: center;
     font-size: 0.75rem;
-    line-height: 1.2;
+    line-height: 1.5;
     color: #000;
     overflow: hidden;
     pointer-events: none;
@@ -214,11 +232,11 @@ a img {
 }
 
 .side-text--left {
-    left: calc(50% - 33.33% - 1.5rem);
+    left: calc(50% - 34.33% - 1.5rem);
 }
 
 .side-text--right {
-    left: calc(50% + 33.33%); 
+    left: calc(50% + 34.33%); 
 }
 
 /* 移动端隐藏 */
@@ -329,6 +347,13 @@ border-right: .025rem dotted #000000; */
         Contact</a>
     </div>
     <div id="custom-cursor"></div>
+    <div class="photos-wrapper">
+        <!-- <div class="ascii-border-top"></div> -->
+        <div class="ascii-border-left"></div>
+        <div class="ascii-border-right"></div>
+        <!-- <div class="ascii-border-bottom"></div>
+  -->
+
     <div class="photos">
         <div class="photos_line">
             <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
@@ -369,9 +394,9 @@ border-right: .025rem dotted #000000; */
                     <img src="photos/photo6.jpg" />
                 </a>
             </div>
-            <div class="photos_line_photo" data-cursor-text="the [Lost H]orizon.1">
-                <a class="image-link" href="https://ni0j.github.io/theLostHorizon1/">
-                    <img src="photos/photo2.jpg" />
+            <div class="photos_line_photo" data-cursor-text="AUTO-OBITUARY">
+                <a class="image-link" href="https://ni0j.github.io/autoObituary/">
+                    <img src="photos/photo7.jpg" />
                 </a>
             </div>
             <div class="photos_line_photo" data-cursor-text="the [Lost H]orizon.1">
@@ -489,6 +514,7 @@ border-right: .025rem dotted #000000; */
                 <img src="photos/photo7.png" />
             </div> -->
         </div> 
+
     </div>
 </body>
 <script>
@@ -504,6 +530,12 @@ border-right: .025rem dotted #000000; */
         mouse_y: 0,
         standard_width: 1440,
         scale_nums: 1,
+
+        eye_tracking_enabled: false,
+        last_eye_x: 0,
+        last_eye_y: 0,
+        eye_movement_speed: 0.5,
+
         init() {
             this.resize();
             window.addEventListener("resize", () => {
@@ -523,7 +555,119 @@ border-right: .025rem dotted #000000; */
             this.container.addEventListener("mousemove", () => {
                 this.move(event.clientX, event.clientY);
             });
+
+            this.initEyeTracking();
         },
+
+        initEyeTracking() {
+        // 创建开关按钮
+        const toggleBtn = document.createElement('button');
+        toggleBtn.textContent = 'Enable Eye Tracking';
+        toggleBtn.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            padding: 10px 20px;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-family: "megumi", sans-serif;
+            font-size: 0.8rem;
+        `;
+        document.body.appendChild(toggleBtn);
+        
+        toggleBtn.addEventListener('click', () => {
+            if (!this.eye_tracking_enabled) {
+                this.startEyeTracking();
+                toggleBtn.textContent = 'Disable Eye Tracking';
+            } else {
+                this.stopEyeTracking();
+                toggleBtn.textContent = 'Enable Eye Tracking';
+            }
+        });
+    },
+
+    startEyeTracking() {
+        this.eye_tracking_enabled = true;
+        
+        webgazer.setGazeListener((data, timestamp) => {
+            if (data == null || !this.eye_tracking_enabled) return;
+            
+            const screenCenterX = window.innerWidth / 2;
+            const screenCenterY = window.innerHeight / 2;
+            
+            // 计算眼睛位置相对于屏幕中心的偏移
+            const offsetX = (data.x - screenCenterX) * this.eye_movement_speed;
+            const offsetY = (data.y - screenCenterY) * this.eye_movement_speed;
+            
+            // 模拟鼠标移动（反向移动，看左边内容往右移）
+            const moveX = screenCenterX - offsetX;
+            const moveY = screenCenterY - offsetY;
+            
+            this.eyeMove(moveX, moveY);
+        }).begin();
+        
+        // 隐藏 webgazer 的默认视频预览
+        webgazer.showVideoPreview(false)
+               .showPredictionPoints(false);
+    },
+    
+    // 新增：停止眼动追踪
+    stopEyeTracking() {
+        this.eye_tracking_enabled = false;
+        webgazer.end();
+    },
+    
+    // 新增：眼动控制移动
+    eyeMove(x, y) {
+        if (!this.eye_tracking_enabled) return;
+        
+        // 计算移动距离
+        let distance_x = (x - this.last_eye_x) / this.scale_nums;
+        let distance_y = (y - this.last_eye_y) / this.scale_nums;
+        
+        // 平滑处理，避免抖动
+        distance_x *= 0.3;
+        distance_y *= 0.3;
+        
+        this.img_data.forEach((img) => {
+            let duration = 0.5; // 眼动用更短的动画时间
+            
+            img.mov_x += distance_x;
+            if (img.x + img.mov_x > this.container_width) {
+                img.mov_x -= this.container_width;
+                duration = 0;
+            }
+            if (img.x + img.mov_x < -this.photo_width) {
+                img.mov_x += this.container_width;
+                duration = 0;
+            }
+            
+            img.mov_y += distance_y;
+            if (img.y + img.mov_y > this.container_height) {
+                img.mov_y -= this.container_height;
+                duration = 0;
+            }
+            if (img.y + img.mov_y < -this.photo_height) {
+                img.mov_y += this.container_height;
+                duration = 0;
+            }
+            
+            if (img.ani) img.ani.kill();
+            img.ani = gsap.to(img.node, {
+                transform: `translate(${img.mov_x}px,${img.mov_y}px)`,
+                duration: duration,
+                ease: 'power2.out'
+            });
+        });
+        
+        this.last_eye_x = x;
+        this.last_eye_y = y;
+    },
+
+    
         resize() {
             let imgs = [...document.querySelectorAll(".photos_line_photo")];
             this.container_width = this.container.offsetWidth;
@@ -692,7 +836,7 @@ function positionElements() {
 
     function createSideText() {
         const photos = document.querySelector('.photos');
-        const text = '¿ ?\n'.repeat(50); // 重复足够多行
+        const text = '¿ ?\n'.repeat(38); // 重复足够多行
 
         ['left', 'right'].forEach(side => {
             const el = document.createElement('div');
@@ -702,6 +846,8 @@ function positionElements() {
         });
     }
     createSideText();
+
+    
 </script>
 
 </html>

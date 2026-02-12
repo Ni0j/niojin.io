@@ -591,9 +591,14 @@ border-right: .025rem dotted #000000; */
 
     startEyeTracking() {
         this.eye_tracking_enabled = true;
+        console.log('🎬 Starting eye tracking...');
         
         webgazer.setGazeListener((data, timestamp) => {
-            if (data == null || !this.eye_tracking_enabled) return;
+            if (data == null) {
+            console.warn('⚠️ No eye data received');
+            return;
+        }
+        if (!this.eye_tracking_enabled) return;
             
             const screenCenterX = window.innerWidth / 2;
             const screenCenterY = window.innerHeight / 2;
@@ -612,6 +617,8 @@ border-right: .025rem dotted #000000; */
         // 隐藏 webgazer 的默认视频预览
         webgazer.showVideoPreview(false)
                .showPredictionPoints(false);
+
+        console.log('✅ Eye tracking started! Look around the screen.');
     },
     
     // 新增：停止眼动追踪
@@ -623,6 +630,13 @@ border-right: .025rem dotted #000000; */
     // 新增：眼动控制移动
     eyeMove(x, y) {
         if (!this.eye_tracking_enabled) return;
+
+        if (this.last_eye_x === 0 && this.last_eye_y === 0) {
+        this.last_eye_x = x;
+        this.last_eye_y = y;
+        console.log('👁️ Eye tracking initialized');
+        return;
+    }
         
         // 计算移动距离
         let distance_x = (x - this.last_eye_x) / this.scale_nums;
@@ -631,6 +645,8 @@ border-right: .025rem dotted #000000; */
         // 平滑处理，避免抖动
         distance_x *= 0.3;
         distance_y *= 0.3;
+
+        console.log(`👁️ Eye position: (${x.toFixed(0)}, ${y.toFixed(0)}) | Distance: (${distance_x.toFixed(2)}, ${distance_y.toFixed(2)})`);
         
         this.img_data.forEach((img) => {
             let duration = 0.5; // 眼动用更短的动画时间
@@ -667,7 +683,7 @@ border-right: .025rem dotted #000000; */
         this.last_eye_y = y;
     },
 
-    
+
         resize() {
             let imgs = [...document.querySelectorAll(".photos_line_photo")];
             this.container_width = this.container.offsetWidth;

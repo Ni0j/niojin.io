@@ -64,15 +64,15 @@ font-style: normal;
             -webkit-mask-image: linear-gradient(
                 to bottom,
                 transparent 0%,
-                black 10%,
-                black 90%,
+                black 20%,
+                black 80%,
                 transparent 100%
             );
             mask-image: linear-gradient(
                 to bottom,
                 transparent 0%,
-                black 10%,
-                black 90%,
+                black 20%,
+                black 80%,
                 transparent 100%
             )
             
@@ -183,7 +183,7 @@ border-right: .025rem dotted #000000; */
        .contact {
         position: absolute;
         bottom: 5%;
-        left: 50%;
+        left: 5%;
         transform: translate(-50%,0%);
         width: 100%;
         height: 1vh;
@@ -344,7 +344,13 @@ border-right: .025rem dotted #000000; */
     </div>
     <div class="contact">
         <a class="contact_text" href="https://drive.google.com/file/d/1iJO6BU_6_0B6j8qWHyJ5oZa6vEUjmAem/view?usp=sharing" target="_blank">
-        Contact</a>
+        Resume</a>
+        <br><br>
+        <a class="contact_text" href="https://www.instagram.com/7ni0jin/?hl=en" target="_blank">
+        @7ni0jin</a>
+    </div>
+    <div class="info">
+        
     </div>
     <div id="custom-cursor"></div>
     <div class="photos-wrapper">
@@ -485,34 +491,35 @@ border-right: .025rem dotted #000000; */
                 <img src="photos/photo27.png" />
             </div> -->
         </div>
-        <!-- <div class="photos_line">
-            <div class="photos_line_photo">
-                <img src="photos/photo22.png" />
+        <div class="photos_line">
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
             </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo23.png" />
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
             </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo24.png" />
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
             </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo25.png" />
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
             </div>
-            <div class="photos_line_photo">
+            <!-- <div class="photos_line_photo">
                 <img src="photos/photo26.png" />
             </div>
             <div class="photos_line_photo">
                 <img src="photos/photo27.png" />
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo28.png" />
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo7.png" />
-            </div>
-            <div class="photos_line_photo">
-                <img src="photos/photo7.png" />
             </div> -->
+        </div>
+        
         </div> 
 
     </div>
@@ -523,6 +530,8 @@ border-right: .025rem dotted #000000; */
         img_data: [],
         container_width: 0,
         container_height: 0,
+        content_width: 0,    // 新增：实际内容宽度
+        content_height: 0,
         photo_width: 0,
         photo_height: 0,
         if_movable: false,
@@ -531,10 +540,16 @@ border-right: .025rem dotted #000000; */
         standard_width: 1440,
         scale_nums: 1,
 
-        eye_tracking_enabled: false,
-        last_eye_x: 0,
-        last_eye_y: 0,
-        eye_movement_speed: 0.5,
+        auto_move_enabled: true, // 默认开启
+        base_speed: 0.5,         // 基础向上漂移速度
+        boost_speed: 3,          // 按键加速时的速度
+        keys_pressed: {          // 追踪按键状态
+            w: false,
+            a: false,
+            s: false,
+            d: false
+        },
+        
 
         init() {
             this.resize();
@@ -543,155 +558,204 @@ border-right: .025rem dotted #000000; */
             });
             this.container.addEventListener("mousedown", () => {
                 this.if_movable = true;
+                
+                this.auto_move_enabled = false;
+
                 this.mouse_x = event.clientX;
                 this.mouse_y = event.clientY;
+                
+                console.log('🖱️ Manual control - auto move paused');
             });
+
             this.container.addEventListener("mouseup", () => {
                 this.if_movable = false;
+                
+                this.auto_move_enabled = true; // 恢复自动移动
+                console.log('✨ Auto move resumed');
             });
+
             this.container.addEventListener("mouseleave", () => {
                 this.if_movable = false;
+
+                this.auto_move_enabled = true;
             });
             this.container.addEventListener("mousemove", () => {
                 this.move(event.clientX, event.clientY);
             });
 
-            this.initEyeTracking();
+            this.initKeyboardControl();
+            this.startAutoMove();
+            
         },
 
-        initEyeTracking() {
-        // 创建开关按钮
-        const toggleBtn = document.createElement('button');
-        toggleBtn.textContent = 'Enable Eye Tracking';
-        toggleBtn.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
-            padding: 10px 20px;
-            background: #000;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-family: "megumi", sans-serif;
-            font-size: 0.8rem;
-        `;
-        document.body.appendChild(toggleBtn);
-        
-        toggleBtn.addEventListener('click', () => {
-            if (!this.eye_tracking_enabled) {
-                this.startEyeTracking();
-                toggleBtn.textContent = 'Disable Eye Tracking';
-            } else {
-                this.stopEyeTracking();
-                toggleBtn.textContent = 'Enable Eye Tracking';
-            }
-        });
-    },
+        initKeyboardControl() {
+            // 按键按下
+            document.addEventListener('keydown', (e) => {
+                const key = e.key.toLowerCase();
 
-    startEyeTracking() {
-        this.eye_tracking_enabled = true;
-        console.log('🎬 Starting eye tracking...');
-        
-        webgazer.setGazeListener((data, timestamp) => {
-            if (data == null) {
-            console.warn('⚠️ No eye data received');
+
+                if (e.code === 'Space') {
+            e.preventDefault(); // 防止页面滚动
+            this.auto_move_enabled = !this.auto_move_enabled;
+            if (this.auto_move_enabled) {
+                console.log('▶️ Auto move resumed');
+            } else {
+                console.log('⏸️ Auto move paused');
+            }
             return;
         }
-        if (!this.eye_tracking_enabled) return;
-            
-            const screenCenterX = window.innerWidth / 2;
-            const screenCenterY = window.innerHeight / 2;
-            
-            // 计算眼睛位置相对于屏幕中心的偏移
-            const offsetX = (data.x - screenCenterX) * this.eye_movement_speed;
-            const offsetY = (data.y - screenCenterY) * this.eye_movement_speed;
-            
-            // 模拟鼠标移动（反向移动，看左边内容往右移）
-            const moveX = screenCenterX - offsetX;
-            const moveY = screenCenterY - offsetY;
-            
-            this.eyeMove(moveX, moveY);
-        }).begin();
-        
-        // 隐藏 webgazer 的默认视频预览
-        webgazer.showVideoPreview(false)
-               .showPredictionPoints(false);
 
-        console.log('✅ Eye tracking started! Look around the screen.');
-    },
-    
-    // 新增：停止眼动追踪
-    stopEyeTracking() {
-        this.eye_tracking_enabled = false;
-        webgazer.end();
-    },
-    
-    // 新增：眼动控制移动
-    eyeMove(x, y) {
-        if (!this.eye_tracking_enabled) return;
-
-        if (this.last_eye_x === 0 && this.last_eye_y === 0) {
-        this.last_eye_x = x;
-        this.last_eye_y = y;
-        console.log('👁️ Eye tracking initialized');
-        return;
-    }
-        
-        // 计算移动距离
-        let distance_x = (x - this.last_eye_x) / this.scale_nums;
-        let distance_y = (y - this.last_eye_y) / this.scale_nums;
-        
-        // 平滑处理，避免抖动
-        distance_x *= 0.3;
-        distance_y *= 0.3;
-
-        console.log(`👁️ Eye position: (${x.toFixed(0)}, ${y.toFixed(0)}) | Distance: (${distance_x.toFixed(2)}, ${distance_y.toFixed(2)})`);
-        
-        this.img_data.forEach((img) => {
-            let duration = 0.5; // 眼动用更短的动画时间
-            
-            img.mov_x += distance_x;
-            if (img.x + img.mov_x > this.container_width) {
-                img.mov_x -= this.container_width;
-                duration = 0;
-            }
-            if (img.x + img.mov_x < -this.photo_width) {
-                img.mov_x += this.container_width;
-                duration = 0;
-            }
-            
-            img.mov_y += distance_y;
-            if (img.y + img.mov_y > this.container_height) {
-                img.mov_y -= this.container_height;
-                duration = 0;
-            }
-            if (img.y + img.mov_y < -this.photo_height) {
-                img.mov_y += this.container_height;
-                duration = 0;
-            }
-            
-            if (img.ani) img.ani.kill();
-            img.ani = gsap.to(img.node, {
-                transform: `translate(${img.mov_x}px,${img.mov_y}px)`,
-                duration: duration,
-                ease: 'power2.out'
+                if (key in this.keys_pressed && !this.keys_pressed[key]) {
+                    this.keys_pressed[key] = true;
+                    console.log(`⚡ Boost: ${key.toUpperCase()}`);
+                }
             });
-        });
-        
-        this.last_eye_x = x;
-        this.last_eye_y = y;
-    },
 
+            // 按键释放
+            document.addEventListener('keyup', (e) => {
+                const key = e.key.toLowerCase();
+                if (key in this.keys_pressed) {
+                    this.keys_pressed[key] = false;
+                }
+            });
+
+            // 创建提示
+            const hint = document.createElement('div');
+            hint.innerHTML = `
+                <div style="margin-bottom: 5px;">WASD: Boost direction</div>
+                <div style="font-size: 0.7rem; opacity: 0.7;">Mouse drag: Manual control</div>
+            `;
+            hint.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 10000;
+                padding: 15px 20px;
+                background: rgba(0, 0, 0, 0.8);
+                color: #fff;
+                font-family: "megumi", sans-serif;
+                font-size: 0.8rem;
+                line-height: 1.5;
+                pointer-events: none;
+            `;
+            document.body.appendChild(hint);
+
+            // 3秒后淡出提示
+            setTimeout(() => {
+                hint.style.transition = 'opacity 1s';
+                hint.style.opacity = '0';
+                setTimeout(() => hint.remove(), 1000);
+            }, 3000);
+        },
+
+        startAutoMove() {
+            const autoMove = () => {
+                if (this.auto_move_enabled) {
+                    // 计算移动方向和速度
+                    let moveX = 0;
+                    let moveY = -this.base_speed; // 默认向上
+
+                    // 检查是否有按键加速
+                    const hasBoost = this.keys_pressed.w || this.keys_pressed.a || 
+                                   this.keys_pressed.s || this.keys_pressed.d;
+
+                    if (hasBoost) {
+                        // 如果有按键，使用加速速度覆盖基础移动
+                        moveX = 0;
+                        moveY = 0;
+                        
+                        if (this.keys_pressed.w) moveY -= this.boost_speed; // 上
+                        if (this.keys_pressed.s) moveY += this.boost_speed; // 下
+                        if (this.keys_pressed.a) moveX -= this.boost_speed; // 左
+                        if (this.keys_pressed.d) moveX += this.boost_speed; // 右
+                    }
+
+                    this.autoMoveStep(moveX, moveY);
+                }
+                
+                requestAnimationFrame(autoMove);
+            };
+            
+            autoMove();
+            console.log('🌊 Auto upward drift started');
+        },
+    
+        autoMoveStep(dx, dy) {
+            this.img_data.forEach((img) => {
+                let duration = 0.05;
+                
+                img.mov_x += dx;
+                if (img.x + img.mov_x > this.content_width) {
+                    img.mov_x -= this.content_width;
+                    duration = 0;
+                }
+                if (img.x + img.mov_x < -this.photo_width) {
+                    img.mov_x += this.content_width;
+                    duration = 0;
+                }
+                
+                img.mov_y += dy;
+                if (img.y + img.mov_y > this.content_height) {
+                    img.mov_y -= this.content_height;
+                    duration = 0;
+                }
+                if (img.y + img.mov_y < -this.photo_height) {
+                    img.mov_y += this.content_height;
+                    duration = 0;
+                }
+                
+                if (img.ani) img.ani.kill();
+                img.ani = gsap.to(img.node, {
+                    transform: `translate(${img.mov_x}px,${img.mov_y}px)`,
+                    duration: duration,
+                    ease: 'linear'
+                });
+            });
+        },
 
         resize() {
             let imgs = [...document.querySelectorAll(".photos_line_photo")];
+            let lines = [...document.querySelectorAll(".photos_line")];
+
             this.container_width = this.container.offsetWidth;
             this.container_height = this.container.offsetHeight;
+
+            if (imgs.length > 0 && lines.length > 0) {
             this.photo_width = imgs[0].offsetWidth;
             this.photo_height = imgs[0].offsetHeight;
+            
+            // 横向：一行中所有图片的宽度 + margin
+            const firstLine = lines[0];
+            const photosInFirstLine = firstLine.querySelectorAll('.photos_line_photo');
+            if (photosInFirstLine.length > 0) {
+                // 计算一行的总宽度（包括 margin）
+                let lineWidth = 0;
+                photosInFirstLine.forEach(photo => {
+                    const style = window.getComputedStyle(photo);
+                    lineWidth += photo.offsetWidth + 
+                                parseFloat(style.marginLeft) + 
+                                parseFloat(style.marginRight);
+                });
+                this.content_width = lineWidth;
+            }
+
+            let totalHeight = 0;
+            lines.forEach(line => {
+                const style = window.getComputedStyle(line);
+                totalHeight += line.offsetHeight + 
+                              parseFloat(style.marginTop) + 
+                              parseFloat(style.marginBottom);
+            });
+            this.content_height = totalHeight;
+            
+            console.log(`📐 Content size: ${this.content_width.toFixed(0)}x${this.content_height.toFixed(0)}`);
+        }
+
+            // this.photo_width = imgs[0].offsetWidth;
+            // this.photo_height = imgs[0].offsetHeight;
             this.scale_nums = document.body.offsetWidth / this.standard_width;
             this.container.style.transform = `scale(${this.scale_nums})`;
+
             gsap.to(imgs, {
                 transform: `translate(0,0)`,
                 duration: 0,
@@ -709,28 +773,31 @@ border-right: .025rem dotted #000000; */
                 });
             });
         },
+
         move(x, y) {
             if (!this.if_movable) return 0;
             let distance_x = (x - this.mouse_x) / this.scale_nums;
             let distance_y = (y - this.mouse_y) / this.scale_nums;
+
             this.img_data.forEach((img) => {
                 let duration = 1;
+
                 img.mov_x += distance_x;
-                if (img.x + img.mov_x > this.container_width) {
-                    img.mov_x -= this.container_width;
+                if (img.x + img.mov_x > this.content_width) {
+                    img.mov_x -= this.content_width;
                     duration = 0;
                 }
                 if (img.x + img.mov_x < -this.photo_width) {
-                    img.mov_x += this.container_width;
+                    img.mov_x += this.content_width;
                     duration = 0;
                 }
                 img.mov_y += distance_y;
-                if (img.y + img.mov_y > this.container_height) {
-                    img.mov_y -= this.container_height;
+                if (img.y + img.mov_y > this.content_height) {
+                    img.mov_y -= this.content_height;
                     duration = 0;
                 }
                 if (img.y + img.mov_y < -this.photo_height) {
-                    img.mov_y += this.container_height;
+                    img.mov_y += this.content_height;
                     duration = 0;
                 }
                 if (img.ani) img.ani.kill();

@@ -13,6 +13,7 @@
         * {
             padding: 0;
             margin: 0;
+            cursor: move;
         }
 
         img {
@@ -52,6 +53,166 @@ font-weight: 200;
 font-style: normal;
             font-size: .25rem;
         }
+
+ /* Index 菜单样式 */
+.index-menu {
+    position: fixed;
+    right: 2rem;
+    top: 2rem;
+    z-index: 1000;
+    font-family: "megumi", sans-serif;
+    font-weight: 200;
+    font-size: .875rem;
+}
+
+.index-menu--left {
+    right: auto;
+    left: 2rem;
+}
+
+.index-menu--left .index-list {
+    right: auto;
+    left: 0;
+}
+
+.index-menu--left .index-item,
+.index-menu--left .index-item a {
+    text-align: left;
+}
+
+.index-trigger {
+    font-style: normal;
+    transition: font-style 0.3s ease;
+    cursor: pointer;
+    
+}
+
+.right{
+    text-align: right;
+    
+}
+.left{
+    text-align: left;
+}
+.index-trigger:hover {
+    font-style: italic;
+}
+
+.index-list {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    display: block;
+    
+    /* 🔑 拉出动画 */
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s ease;
+    
+    min-width: 20rem;
+    max-width: 8vh;
+}
+
+.index-list.active {
+    max-height: 60rem;
+    opacity: 1;
+}
+
+.index-item {
+    font-style: normal;
+    padding: 0.2rem 0;
+   
+    transition: font-style 0.3s ease;
+    text-align: right; 
+    /* 🔑 确保纵向排列 */
+    display: block;
+    width: 100%;
+    font-size: 0.875rem;
+}
+
+.index-item:hover {
+    font-style: italic;
+}
+
+.index-item a {
+    color: #000;
+    text-decoration: none;
+    cursor: context-menu;
+    display: block; /* 🔑 block 让链接占满整行 */
+    text-align: right;
+}
+
+/* 移动端隐藏 */
+@media screen and (max-width: 768px) {
+    .index-menu {
+        display: none;
+    }
+}
+
+.info-container {
+    position: fixed;
+    left: calc(50% - 34.33% - 3rem - 10rem); /* 在左border左侧，留出间距 */
+    top: 8%; /* 底部留出空间 */
+    width: 12rem;
+    max-height: 70vh;
+    z-index: 900;
+    
+    font-family: "megumi", sans-serif;
+    font-weight: 200;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #000;
+    
+    display: block;
+    justify-content: flex-start;
+    align-items: flex-start;
+    
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+}
+
+.info-container:hover {
+    opacity: 0.7;
+}
+
+/* 页面内容样式 */
+.info-page {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.info-page.active {
+    display: block;
+    opacity: 1;
+}
+
+
+.info-container p {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.info-section {
+    display: block !important;  /* 🔑 强制覆盖父级 flex */
+    text-align: left;
+}
+
+.info-section-title {
+    font-weight: 300;
+    font-size: 0.875rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.4;
+    display: block !important; 
+}
+
+.info-item {
+    margin-bottom: 0.8rem;
+    display: block !important; 
+}
 
 
         .photos {
@@ -191,7 +352,7 @@ border-right: .025rem dotted #000000; */
 }
 
 .contact_text{
-        font-size: 1rem;
+        font-size: .875rem;
         /* font-family: 'PP Editorial Old', italic, sans-serif;*/
         font-style: italic;
         text-transform: capitalize;
@@ -258,6 +419,11 @@ a img {
     font-family: "megumi", sans-serif;
     font-weight: 200;
     font-style: italic;
+}
+
+.info-mobile-content {
+    background: rgba(241, 241, 241, 0.95);  /* 半透明背景 */
+    backdrop-filter: blur(10px);             /* 毛玻璃效果 */
 }
 
 .side-text--left {
@@ -339,20 +505,48 @@ border-right: .025rem dotted #000000; */
     <div class="header">
         <div class="text">
             <!-- <h1 class="name">Nio Jin</h1> -->
-            <p class="text">Nio Jin.</p>
+            <p class="text">Nio Jin</p>
         </div>
     </div>
     <div class="contact">
-        <a class="contact_text" href="https://drive.google.com/file/d/1iJO6BU_6_0B6j8qWHyJ5oZa6vEUjmAem/view?usp=sharing" target="_blank">
-        Resume</a>
+        <a class="contact_text" href="niojin.noi@gmail.com" target="_blank">
+            email</a>
         <br><br>
         <a class="contact_text" href="https://www.instagram.com/7ni0jin/?hl=en" target="_blank">
         @7ni0jin</a>
     </div>
+
+    <div class="index-menu index-menu--left">
+        <div class="index-trigger left">: )</div>
+        <div class="index-list"></div>
+    </div>
+    
+    <div class="info">
+        
+    </div>
+
     <div class="info">
         
     </div>
     <div id="custom-cursor"></div>
+    <div class="index-menu">
+        <div class="index-trigger right">·*. ^+</div>
+        <div class="index-list">
+            <div class="index-item">
+                2025<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Offset Art Book Fair
+            </div>
+            <div class="index-item">
+                2025<br>
+                    &nbsp;&nbsp;The New School Free Press
+            </div>
+            <div class="index-item">
+                2026<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Brookyln Art Book Fair
+            </div>
+           
+        </div>
+    </div>
     <div class="photos-wrapper">
         <!-- <div class="ascii-border-top"></div> -->
         <div class="ascii-border-left"></div>
@@ -523,6 +717,7 @@ border-right: .025rem dotted #000000; */
         </div> 
 
     </div>
+    <div class="list"></div>
 </body>
 <script>
     const photobox = {
@@ -569,6 +764,8 @@ border-right: .025rem dotted #000000; */
 
             this.container.addEventListener("mouseup", () => {
                 this.if_movable = false;
+
+                
                 
                 this.auto_move_enabled = true; // 恢复自动移动
                 console.log('✨ Auto move resumed');
@@ -620,25 +817,43 @@ border-right: .025rem dotted #000000; */
             });
 
             // 创建提示
-            const hint = document.createElement('div');
-            hint.innerHTML = `
-                <div style="margin-bottom: 5px;">WASD: Boost direction</div>
-                <div style="font-size: 0.7rem; opacity: 0.7;">Mouse drag: Manual control</div>
-            `;
-            hint.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                z-index: 10000;
-                padding: 15px 20px;
-                background: rgba(0, 0, 0, 0.8);
-                color: #fff;
-                font-family: "megumi", sans-serif;
-                font-size: 0.8rem;
-                line-height: 1.5;
-                pointer-events: none;
-            `;
-            document.body.appendChild(hint);
+           
+
+            // 监听滚轮，提示用户用 WASD
+let wasdHintShown = false;
+
+
+
+
+document.addEventListener('wheel', () => {
+    if (wasdHintShown) return;
+    wasdHintShown = true;
+
+    const wasdHint = document.createElement('div');
+    wasdHint.textContent = 'try wasd';
+    wasdHint.style.cssText = `
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10000;
+        font-family: "megumi", sans-serif;
+        font-weight: 200;
+        font-style: italic;
+        font-size: 1.875rem;
+        color: #000;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 1s ease;
+    `;
+    document.body.appendChild(wasdHint);
+
+    // 2秒后淡出消失
+    setTimeout(() => {
+        wasdHint.style.opacity = '0';
+        setTimeout(() => wasdHint.remove(), 1000);
+    }, 2000);
+});
 
             // 3秒后淡出提示
             setTimeout(() => {
@@ -930,6 +1145,148 @@ function positionElements() {
     }
     createSideText();
 
+    // Index 菜单交互
+    function initIndexMenu() {
+    document.querySelectorAll('.index-menu').forEach(menu => {
+        const trigger = menu.querySelector('.index-trigger');
+        const list = menu.querySelector('.index-list');
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.index-list').forEach(l => {
+                if (l !== list) l.classList.remove('active');
+            });
+            list.classList.toggle('active');
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.index-menu')) {
+            document.querySelectorAll('.index-list').forEach(l => l.classList.remove('active'));
+        }
+    });
+
+    const indexList = document.querySelector('.index-menu--left .index-list');
+    if (indexList) {
+        const seen = new Set();
+        const items = [];
+
+        document.querySelectorAll('.photos_line_photo').forEach(photo => {
+            const name = photo.getAttribute('data-cursor-text');
+            const link = photo.querySelector('a');
+            const href = link ? link.getAttribute('href') : '#';
+
+            if (name && !seen.has(name)) {
+                seen.add(name);
+                items.push({ name, href });
+            }
+        });
+
+        indexList.innerHTML = items.map(item => `
+            <div class="index-item">
+                <a href="${item.href}" target="_blank">${item.name}</a>
+            </div>
+        `).join('');
+    }
+}
+
+initIndexMenu();
+
+document.querySelectorAll('a').forEach(link => {
+    if (!link.hasAttribute('target')) {
+        link.setAttribute('target', '_blank');
+    }
+});
+
+function initInfoPager() {
+        const container = document.getElementById('infoContainer');
+        const pages = container.querySelectorAll('.info-page');
+        let currentPage = 1;
+        const totalPages = pages.length;
+
+        container.addEventListener('click', (e) => {
+            // 点击容器，向下翻页
+            currentPage++;
+            if (currentPage > totalPages) {
+                currentPage = 1; // 循环回第一页
+            }
+
+            // 更新显示
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            pages[currentPage - 1].classList.add('active');
+
+            console.log(`📄 Page ${currentPage}/${totalPages}`);
+        });
+
+        // 也可以用滚轮翻页（可选）
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            
+            if (e.deltaY > 0) {
+                // 向下滚，下一页
+                currentPage++;
+                if (currentPage > totalPages) currentPage = 1;
+            } else {
+                // 向上滚，上一页
+                currentPage--;
+                if (currentPage < 1) currentPage = totalPages;
+            }
+
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            pages[currentPage - 1].classList.add('active');
+
+            console.log(`📄 Page ${currentPage}/${totalPages}`);
+        });
+    }
+
+    initInfoPager();
+
+    function initMobileInfo() {
+        const trigger = document.querySelector('.info-mobile-trigger');
+        const content = document.querySelector('.info-mobile-content');
+        
+        if (!trigger || !content) return;
+        
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            content.classList.toggle('active');
+        });
+        
+        // 点击其他地方关闭菜单
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.info-mobile')) {
+                content.classList.remove('active');
+            }
+        });
+
+        // 翻页功能
+        const pages = content.querySelectorAll('.info-mobile-page');
+        let currentPage = 1;
+        const totalPages = pages.length;
+
+        content.addEventListener('click', (e) => {
+            // 阻止触发关闭
+            e.stopPropagation();
+            
+            currentPage++;
+            if (currentPage > totalPages) {
+                currentPage = 1;
+            }
+
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            pages[currentPage - 1].classList.add('active');
+
+            console.log(`📱 Mobile Page ${currentPage}/${totalPages}`);
+        });
+    }
+
+    initMobileInfo();
     
 </script>
 

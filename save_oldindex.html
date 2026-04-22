@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NioJin.exe</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="https://use.typekit.net/bqk8rmx.css">
+    <script src="gsap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webgazer/2.0.0/webgazer.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            cursor: move;
+        }
+
+        img {
+            pointer-events: none;
+            user-select: none;
+        }
+
+        img {
+        filter: grayscale(100%); 
+        transition: filter 0.5s ease; 
+        }
+
+        img:hover {
+        filter: grayscale(0%);
+        }
+
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+
+        body {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            background-color: #f2f2f2;
+            overflow: hidden;
+            /* font-family: 'PP Editorial Old', italic, sans-serif;
+            font-style: italic; */
+            font-family: swiss-721-bt, sans-serif;
+font-weight: 100;
+font-style: normal;
+            font-size: .25rem;
+        }
+
+ /* Index 菜单样式 */
+.index-menu {
+    position: fixed;
+    right: 2rem;
+    top: 2rem;
+    z-index: 1000;
+    font-family: swiss-721-bt, sans-serif;
+font-weight: 100;
+font-style: normal;
+    font-size: .875rem;
+}
+
+.index-menu--left {
+    right: auto;
+    left: 2rem;
+}
+
+.index-menu--left .index-list {
+    right: auto;
+    left: 0;
+}
+
+.index-menu--left .index-item,
+.index-menu--left .index-item a {
+    text-align: left;
+}
+
+@keyframes blink-soft {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.15; }   /* ← 这里调闪烁最暗值，越小越暗 */
+    100% { opacity: 1; }
+}
+
+.index-trigger {
+    font-style: normal;
+    cursor: pointer;
+    
+}
+
+.right{
+    text-align:left;
+    
+}
+.left{
+    text-align: left;
+}
+.index-menu--right .index-item:hover {
+    animation: blink-soft 1.6s ease-in-out infinite;  /* ← 1.6s 调速度 */
+}
+
+.index-list {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    display: block;
+    
+    
+    /* 🔑 拉出动画 */
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s ease;
+    
+    min-width: 10rem;
+    max-width: 8vh;
+}
+
+.index-list.active {
+    max-height: 60rem;
+    opacity: 1;
+}
+
+.index-item {
+    font-style: normal;
+    color:#111314;
+    padding: 0.2rem 0;
+    text-align:left; 
+    /* 🔑 确保纵向排列 */
+    display: block;
+    width: 100%;
+    font-size: 0.875rem;
+}
+
+.index-menu--right .index-item:hover {
+    animation: blink-soft 1.6s ease-in-out infinite;
+}
+
+
+
+.index-item a {
+    color: #111314;
+    text-decoration: none;
+    cursor: context-menu;
+    display: block; /* 🔑 block 让链接占满整行 */
+    text-align: left;
+}
+
+.index-item,
+.index-item a {
+    background-color: #ffffff;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding: .1em 0.3em;
+    line-height: 1.25;
+    display: inline;
+}
+
+/* 移动端隐藏 */
+@media screen and (max-width: 768px) {
+    .index-menu {
+        display: none;
+    }
+}
+
+.info-container {
+    position: fixed;
+    left: calc(50% - 34.33% - 3rem - 10rem); /* 在左border左侧，留出间距 */
+    top: 8%; /* 底部留出空间 */
+    width: 12rem;
+    max-height: 70vh;
+    z-index: 900;
+    
+    font-family: swiss-721-bt, sans-serif;
+font-weight: 100;
+font-style: normal;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #111314;
+    
+    display: block;
+    justify-content: flex-start;
+    align-items: flex-start;
+    
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+}
+
+.info-container:hover {
+    opacity: 0.7;
+}
+
+/* 页面内容样式 */
+.info-page {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.info-page.active {
+    display: block;
+    opacity: 1;
+}
+
+
+.info-container p {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.info-section {
+    display: block !important;  /* 🔑 强制覆盖父级 flex */
+    text-align: left;
+}
+
+.info-section-title {
+    font-weight: 300;
+    font-size: 0.875rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.4;
+    display: block !important; 
+}
+
+.info-item {
+    margin-bottom: 0.8rem;
+    display: block !important; 
+}
+
+
+
+
+        .photos {
+            position: absolute;
+            flex-direction: column;
+            overflow: hidden;
+            width: 60%;
+            height: 100%; 
+
+            -webkit-mask-image: linear-gradient(
+                to bottom,
+                transparent 0%,
+                black 20%,
+                black 80%,
+                transparent 100%
+            );
+            mask-image: linear-gradient(
+                to bottom,
+                transparent 0%,
+                black 20%,
+                black 80%,
+                transparent 100%
+            )
+            
+            /* border-left: .025rem dotted #111314;
+border-right: .025rem dotted #111314; */
+            }
+
+        .photos_line {
+            font-size: 1px;
+            height: 40em;
+            margin-top: 75em;
+            margin-bottom: 75em;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .photos_line_photo {
+            font-size: 1px;
+            width: 135em;
+            /* height: 90%; */
+            aspect-ratio: 1 / 1;
+            margin-left: 45em;
+            margin-right: 45em;
+            /* border-radius: 15em; */
+            /* background-color: #111314; */
+            /* border-color: #111314;
+            border-style: solid;
+            border-width: .0125rem; */
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .photos_line_photo img {
+            height: 100%;
+            transition: 0.3s ease;
+        }
+
+        .photos_line_photo:hover img {
+            transform: scale(1.2);
+            transition: transform 0.3s ease;
+        }
+
+        /* 1. 隐藏默认光标 */
+.photos_line_photo:hover {
+    cursor: none; 
+}
+
+.photos_line_photo:hover a {
+    cursor: none; 
+}
+
+
+#custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999; 
+    /* background-color: #333; */
+    color: white;
+    padding: 5px 10px;
+    font-size: 1.25rem;
+    white-space: nowrap;
+    mix-blend-mode: difference;
+    
+    pointer-events: none; /* 关键：确保不干扰下方的点击事件 */
+    
+    opacity: 0; 
+    transform: translate(-50%, -50%); 
+    transition: opacity 0.2s ease; 
+}
+
+
+
+        @media screen and (max-aspect-ratio: 1.5/1) {
+
+            .photos_line,
+            .photos_line_photo {
+                font-size: 2px;
+            }
+        }
+
+        @media screen and (max-aspect-ratio: 0.8/1) {
+
+            .photos_line,
+            .photos_line_photo {
+                font-size: 2.8px;
+            }
+        }
+
+        .header {
+            position: absolute;
+            top:50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 58%;
+        }
+
+       .text{
+        font-size: 1rem;
+        /* font-family: 'PP Editorial Old', italic, sans-serif; */
+        /* font-style: italic; */
+       }
+
+       .contact a:hover {
+    cursor: context-menu; 
+}
+
+       .contact {
+        position: absolute;
+        bottom: 5%;
+        left: 5%;
+        transform: translate(-50%,0%);
+        width: 100%;
+        height: 1vh;
+        cursor: context-menu;
+}
+
+.contact_text{
+        font-size: .875rem;
+        /* font-family: 'PP Editorial Old', italic, sans-serif;*/
+        font-style: italic;
+        text-transform: capitalize;
+        cursor: context-menu;
+       }
+
+       a{
+        color:black;
+        text-decoration: none;
+        cursor: context-menu;
+       }
+
+
+
+a img {
+    max-width: 100%; 
+    height: auto;   
+    display: block; 
+}
+
+.side-text {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: #111314;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre; /* 保留换行 */
+    font-family: swiss-721-bt, sans-serif;
+font-weight: 100;
+font-style: normal;
+    font-style: italic;
+}
+
+.side-text--left {
+    left: calc(50% - 34.33% - 1.5rem);
+}
+
+.side-text--right {
+    left: calc(50% + 34.33%); 
+}
+
+/* 移动端隐藏 */
+@media screen and (max-width: 768px) {
+    .side-text {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: #000;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre; /* 保留换行 */
+    font-family: swiss-721-bt, sans-serif;
+font-weight: 100;
+font-style: normal;
+    font-style: italic;
+}
+
+.info-mobile-content {
+    background: rgba(241, 241, 241, 0.95);  /* 半透明背景 */
+    backdrop-filter: blur(10px);             /* 毛玻璃效果 */
+}
+
+.side-text--left {
+    left: calc(50% - 43% - 1.5rem);
+}
+
+.side-text--right {
+    left: calc(50% + 43%); 
+}
+}
+
+@media screen and (max-width: 768px) {
+    
+    body{
+        height: 100svh !important; 
+        overflow: hidden !important;
+    }   
+
+    .photos {
+        /* margin-top:; */
+        position: absolute; 
+        width: 90%; 
+        overflow: visible;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); 
+        gap: 10rem;
+        transform: translate(-50%, -50%);/* 向左平移自身宽度的一半 */
+        /* border-left: .025rem dotted #111314;
+border-right: .025rem dotted #111314; */
+         border: none;
+        
+
+    }
+
+    .photos_line {
+        margin: 0 !important; 
+        height: auto !important;
+        width: auto !important;
+        display: contents; 
+
+    }
+
+    .photos_line_photo {
+        margin: 0 !important; 
+        width: 10.5rem; /* 让 Grid 自动分配宽度 */
+        
+        /* 保持 1:1 或您想要的比例 */
+        aspect-ratio: 1 / 1; 
+        
+        /* 调整字体大小，如果其他元素依赖 rem/em */
+        font-size: 10px; 
+    }
+    
+ 
+    .header, .contact {
+        position: absolute;
+        left: auto;
+        transform: none;
+        width: 90%;
+        text-align: center;
+    }
+
+    .header{
+        left: 50%; 
+        transform: translate(-50%, -50%);
+        top: 6vh;
+    }
+    .contact{
+        bottom:4vh;
+    }
+
+}
+
+
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="text">
+            <!-- <h1 class="name">Nio Jin</h1> -->
+            <p class="text">Nio Jin</p>
+        </div>
+    </div>
+    <div class="contact">
+        <a class="contact_text" href="mailto:niojin.noi@gmail.com">
+            email</a>
+        <br><br>
+        <a class="contact_text" href="https://www.instagram.com/7ni0jin/?hl=en" target="_blank">
+        @7ni0jin</a>
+    </div>
+
+    <div class="index-menu index-menu--right">
+        <div class="index-trigger right">·*. ^+</div>
+        <div class="index-list"></div>
+    </div>
+    
+    <div class="info">
+        
+    </div>
+
+    <div class="info">
+        
+    </div>
+    <div id="custom-cursor"></div>
+    <div class="index-menu index-menu--left">
+        <div class="index-trigger left">: )</div>
+        <div class="index-list">
+            <div class="index-item">
+                Nio Jin is a multidisciplinary artist and designer in the Communication Design BFA program at Parsons School of Design at The New School. Working across print, digital environments, and audio, their practice treats medium as part of thought rather than boundary. The work moves between rational systems and emotional resonance
+            </div>
+            <div class="index-item">
+                2025<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Offset Art Book Fair
+            </div>
+            <div class="index-item">
+                2025<br>
+                    &nbsp;&nbsp;The New School Free Press
+            </div>
+            <div class="index-item">
+                2026<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Brookyln Art Book Fair
+            </div>
+           
+        </div>
+    </div>
+    <div class="photos-wrapper">
+        <!-- <div class="ascii-border-top"></div> -->
+        <div class="ascii-border-left"></div>
+        <div class="ascii-border-right"></div>
+        <!-- <div class="ascii-border-bottom"></div>
+  -->
+
+    <div class="photos">
+        <div class="photos_line">
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the [Lost H]orizon.1">
+                <a class="image-link" href="https://ni0j.github.io/theLostHorizon1/">
+                    <img src="photos/photo2.jpg" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the [Lost H]orizon">
+                <a class="image-link" href="https://ni0j.github.io/theLostHorizon/" target="_blank">
+                    <img src="photos/photo3.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="jellyfish that live inside my computer">
+                <a class="image-link" href="https://ni0j.github.io/jellyfish/" target="_blank">
+                    <img src="photos/photo4.PNG" />
+                </a>
+            </div>
+            <!-- <div class="photos_line_photo">
+                <img src="photos/photo7.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo7.png" />
+            </div> -->
+        </div>
+        <div class="photos_line">
+            <div class="photos_line_photo" data-cursor-text="GALA">
+                <a class="image-link" href="https://ni0j.github.io/GALA/" target="_blank">
+                    <img src="photos/photo5.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="pcell.otf">
+                <a class="image-link" href="https://ni0j.github.io/pcell.otf/">
+                    <img src="photos/photo6.jpg" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="AUTO-OBITUARY">
+                <a class="image-link" href="https://ni0j.github.io/autoObituary/">
+                    <img src="photos/photo7.jpg" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the [Lost H]orizon.1">
+                <a class="image-link" href="https://ni0j.github.io/theLostHorizon1/">
+                    <img src="photos/photo2.jpg" />
+                </a>
+            </div>
+            <!-- <div class="photos_line_photo">
+                <img src="photos/photo12.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo13.png" />
+            </div> -->
+            <!-- <div class="photos_line_photo">
+                <img src="photos/photo14.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo7.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo7.png" />
+            </div> -->
+        </div>
+        <div class="photos_line">
+            <div class="photos_line_photo" data-cursor-text="the [Lost H]orizon.1">
+                <a class="image-link" href="https://ni0j.github.io/theLostHorizon1/">
+                    <img src="photos/photo2.jpg" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <!-- <div class="photos_line_photo">
+                <img src="photos/photo19.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo20.png" />
+            </div> -->
+            <!-- <div class="photos_line_photo">
+                <img src="photos/photo21.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo7.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo7.png" />
+            </div> -->
+        </div>
+        <div class="photos_line">
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <!-- <div class="photos_line_photo">
+                <img src="photos/photo26.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo27.png" />
+            </div> -->
+        </div>
+        <div class="photos_line">
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <div class="photos_line_photo" data-cursor-text="the afternoon we tried suicide">
+                <a class="image-link" href="https://ni0j.github.io/theAfternoonWe/">
+                    <img src="photos/photo1.png" />
+                </a>
+            </div>
+            <!-- <div class="photos_line_photo">
+                <img src="photos/photo26.png" />
+            </div>
+            <div class="photos_line_photo">
+                <img src="photos/photo27.png" />
+            </div> -->
+        </div>
+        
+        </div> 
+
+    </div>
+    <div class="list"></div>
+</body>
+<script>
+    const photobox = {
+        container: document.querySelector(".photos"),
+        img_data: [],
+        container_width: 0,
+        container_height: 0,
+        content_width: 0,    // 新增：实际内容宽度
+        content_height: 0,
+        photo_width: 0,
+        photo_height: 0,
+        if_movable: false,
+        mouse_x: 0,
+        mouse_y: 0,
+        standard_width: 1440,
+        scale_nums: 1,
+
+        auto_move_enabled: true, // 默认开启
+        base_speed: 0.5,         // 基础向上漂移速度
+        boost_speed: 3,          // 按键加速时的速度
+        keys_pressed: {          // 追踪按键状态
+            w: false,
+            a: false,
+            s: false,
+            d: false
+        },
+        
+
+        init() {
+            this.resize();
+            window.addEventListener("resize", () => {
+                this.resize();
+            });
+            this.container.addEventListener("mousedown", () => {
+                this.if_movable = true;
+                
+                this.auto_move_enabled = false;
+
+                this.mouse_x = event.clientX;
+                this.mouse_y = event.clientY;
+                
+                console.log('🖱️ Manual control - auto move paused');
+            });
+
+            this.container.addEventListener("mouseup", () => {
+                this.if_movable = false;
+
+                
+                
+                this.auto_move_enabled = true; // 恢复自动移动
+                console.log('✨ Auto move resumed');
+            });
+
+            this.container.addEventListener("mouseleave", () => {
+                this.if_movable = false;
+
+                this.auto_move_enabled = true;
+            });
+            this.container.addEventListener("mousemove", () => {
+                this.move(event.clientX, event.clientY);
+            });
+
+            this.initKeyboardControl();
+            this.startAutoMove();
+            
+        },
+
+        initKeyboardControl() {
+            // 按键按下
+            document.addEventListener('keydown', (e) => {
+                const key = e.key.toLowerCase();
+
+
+                if (e.code === 'Space') {
+            e.preventDefault(); // 防止页面滚动
+            this.auto_move_enabled = !this.auto_move_enabled;
+            if (this.auto_move_enabled) {
+                console.log('▶️ Auto move resumed');
+            } else {
+                console.log('⏸️ Auto move paused');
+            }
+            return;
+        }
+
+                if (key in this.keys_pressed && !this.keys_pressed[key]) {
+                    this.keys_pressed[key] = true;
+                    console.log(`⚡ Boost: ${key.toUpperCase()}`);
+                }
+            });
+
+            // 按键释放
+            document.addEventListener('keyup', (e) => {
+                const key = e.key.toLowerCase();
+                if (key in this.keys_pressed) {
+                    this.keys_pressed[key] = false;
+                }
+            });
+
+            // 创建提示
+           
+
+            // 监听滚轮，提示用户用 WASD
+let wasdHintShown = false;
+
+
+
+
+document.addEventListener('wheel', () => {
+    if (wasdHintShown) return;
+    wasdHintShown = true;
+
+    const wasdHint = document.createElement('div');
+    wasdHint.textContent = 'try wasd';
+    wasdHint.style.cssText = `
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10000;
+        font-family: swiss-721-bt, sans-serif;
+        font-weight: 100;
+        font-style: normal;
+        font-style: italic;
+        font-size: 1.875rem;
+        color: #000;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 1s ease;
+    `;
+    document.body.appendChild(wasdHint);
+
+    // 2秒后淡出消失
+    setTimeout(() => {
+        wasdHint.style.opacity = '0';
+        setTimeout(() => wasdHint.remove(), 1000);
+    }, 2000);
+});
+
+            // 3秒后淡出提示
+            setTimeout(() => {
+                hint.style.transition = 'opacity 1s';
+                hint.style.opacity = '0';
+                setTimeout(() => hint.remove(), 1000);
+            }, 3000);
+        },
+
+        startAutoMove() {
+            const autoMove = () => {
+                if (this.auto_move_enabled) {
+                    // 计算移动方向和速度
+                    let moveX = 0;
+                    let moveY = -this.base_speed; // 默认向上
+
+                    // 检查是否有按键加速
+                    const hasBoost = this.keys_pressed.w || this.keys_pressed.a || 
+                                   this.keys_pressed.s || this.keys_pressed.d;
+
+                    if (hasBoost) {
+                        // 如果有按键，使用加速速度覆盖基础移动
+                        moveX = 0;
+                        moveY = 0;
+                        
+                        if (this.keys_pressed.w) moveY -= this.boost_speed; // 上
+                        if (this.keys_pressed.s) moveY += this.boost_speed; // 下
+                        if (this.keys_pressed.a) moveX -= this.boost_speed; // 左
+                        if (this.keys_pressed.d) moveX += this.boost_speed; // 右
+                    }
+
+                    this.autoMoveStep(moveX, moveY);
+                }
+                
+                requestAnimationFrame(autoMove);
+            };
+            
+            autoMove();
+            console.log('🌊 Auto upward drift started');
+        },
+    
+        autoMoveStep(dx, dy) {
+            this.img_data.forEach((img) => {
+                let duration = 0.05;
+                
+                img.mov_x += dx;
+                if (img.x + img.mov_x > this.content_width) {
+                    img.mov_x -= this.content_width;
+                    duration = 0;
+                }
+                if (img.x + img.mov_x < -this.photo_width) {
+                    img.mov_x += this.content_width;
+                    duration = 0;
+                }
+                
+                img.mov_y += dy;
+                if (img.y + img.mov_y > this.content_height) {
+                    img.mov_y -= this.content_height;
+                    duration = 0;
+                }
+                if (img.y + img.mov_y < -this.photo_height) {
+                    img.mov_y += this.content_height;
+                    duration = 0;
+                }
+                
+                if (img.ani) img.ani.kill();
+                img.ani = gsap.to(img.node, {
+                    transform: `translate(${img.mov_x}px,${img.mov_y}px)`,
+                    duration: duration,
+                    ease: 'linear'
+                });
+            });
+        },
+
+        resize() {
+            let imgs = [...document.querySelectorAll(".photos_line_photo")];
+            let lines = [...document.querySelectorAll(".photos_line")];
+
+            this.container_width = this.container.offsetWidth;
+            this.container_height = this.container.offsetHeight;
+
+            if (imgs.length > 0 && lines.length > 0) {
+            this.photo_width = imgs[0].offsetWidth;
+            this.photo_height = imgs[0].offsetHeight;
+            
+            // 横向：一行中所有图片的宽度 + margin
+            const firstLine = lines[0];
+            const photosInFirstLine = firstLine.querySelectorAll('.photos_line_photo');
+            if (photosInFirstLine.length > 0) {
+                // 计算一行的总宽度（包括 margin）
+                let lineWidth = 0;
+                photosInFirstLine.forEach(photo => {
+                    const style = window.getComputedStyle(photo);
+                    lineWidth += photo.offsetWidth + 
+                                parseFloat(style.marginLeft) + 
+                                parseFloat(style.marginRight);
+                });
+                this.content_width = lineWidth;
+            }
+
+            let totalHeight = 0;
+            lines.forEach(line => {
+                const style = window.getComputedStyle(line);
+                totalHeight += line.offsetHeight + 
+                              parseFloat(style.marginTop) + 
+                              parseFloat(style.marginBottom);
+            });
+            this.content_height = totalHeight;
+            
+            console.log(`📐 Content size: ${this.content_width.toFixed(0)}x${this.content_height.toFixed(0)}`);
+        }
+
+            // this.photo_width = imgs[0].offsetWidth;
+            // this.photo_height = imgs[0].offsetHeight;
+            this.scale_nums = document.body.offsetWidth / this.standard_width;
+            this.container.style.transform = `scale(${this.scale_nums})`;
+
+            gsap.to(imgs, {
+                transform: `translate(0,0)`,
+                duration: 0,
+                ease: 'power4.out'
+            });
+            this.img_data = [];
+            imgs.forEach(img => {
+                this.img_data.push({
+                    node: img,
+                    x: img.offsetLeft,
+                    y: img.offsetTop,
+                    mov_x: 0,
+                    mov_y: 0,
+                    ani: 0
+                });
+            });
+        },
+
+        move(x, y) {
+            if (!this.if_movable) return 0;
+            let distance_x = (x - this.mouse_x) / this.scale_nums;
+            let distance_y = (y - this.mouse_y) / this.scale_nums;
+
+            this.img_data.forEach((img) => {
+                let duration = 1;
+
+                img.mov_x += distance_x;
+                if (img.x + img.mov_x > this.content_width) {
+                    img.mov_x -= this.content_width;
+                    duration = 0;
+                }
+                if (img.x + img.mov_x < -this.photo_width) {
+                    img.mov_x += this.content_width;
+                    duration = 0;
+                }
+                img.mov_y += distance_y;
+                if (img.y + img.mov_y > this.content_height) {
+                    img.mov_y -= this.content_height;
+                    duration = 0;
+                }
+                if (img.y + img.mov_y < -this.photo_height) {
+                    img.mov_y += this.content_height;
+                    duration = 0;
+                }
+                if (img.ani) img.ani.kill();
+                img.ani = gsap.to(img.node, {
+                    transform: `translate(${img.mov_x}px,${img.mov_y}px)`,
+                    duration: duration,
+                    ease: 'power4.out'
+                });
+            });
+            this.mouse_x = x;
+            this.mouse_y = y;
+        }
+    };
+    photobox.init();
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+    const customCursor = document.getElementById('custom-cursor');
+    const photoContainers = document.querySelectorAll('.photos_line_photo');
+    document.addEventListener('mousemove', (e) => {
+        customCursor.style.left = e.clientX + 'px';
+        customCursor.style.top = e.clientY + 'px';
+    });
+
+    photoContainers.forEach(container => {
+        container.addEventListener('mouseenter', () => {
+            const cursorText = container.getAttribute('data-cursor-text');
+            
+            customCursor.textContent = cursorText;
+            
+            customCursor.style.opacity = '1';
+        });
+
+        container.addEventListener('mouseleave', () => {
+            customCursor.style.opacity = '0';
+        });
+    });
+});
+
+function positionElements() {
+        if (window.innerWidth > 768) {
+            // 桌面端恢复默认样式
+            const header = document.querySelector('.header');
+            const contact = document.querySelector('.contact');
+            header.style.top = '';
+            header.style.left = '';
+            header.style.transform = '';
+            contact.style.bottom = '';
+            contact.style.left = '';
+            contact.style.transform = '';
+            return;
+        }
+
+        const header = document.querySelector('.header');
+        const contact = document.querySelector('.contact');
+        const photos = document.querySelector('.photos');
+
+        const vh = window.innerHeight;
+        
+        // 获取 photos 的实际位置（考虑 scale: 300%）
+        const photosRect = photos.getBoundingClientRect();
+        
+        // 关键：photos 被 scale 放大后超出屏幕，我们需要计算可见部分
+        const visibleTop = Math.max(0, photosRect.top);
+        const visibleBottom = Math.min(vh, photosRect.bottom);
+        
+        const hh = header.offsetHeight;
+        const ch = contact.offsetHeight;
+
+        // 计算上方和下方的实际可用空白区域
+        const topSpace = visibleTop;
+        const bottomSpace = vh - visibleBottom;
+
+        // Header 在上方空白区域居中
+        const headerTop = Math.max(0, (topSpace - hh) / 2);
+        
+        // Contact 在下方空白区域居中
+        const contactBottom = Math.max(0, (bottomSpace - ch) / 2);
+
+        // 应用定位 - 保持水平居中
+        header.style.top = `${headerTop}px`;
+        header.style.bottom = 'auto';
+        header.style.left = '50%';
+        header.style.transform = 'translateX(-50%)';
+        
+        contact.style.bottom = `${contactBottom}px`;
+        contact.style.top = 'auto';
+        contact.style.left = '50%';
+        contact.style.transform = 'translateX(-50%)';
+
+        // Debug 信息
+        console.log('=== Position Elements ===');
+        console.log({
+            windowSize: `${window.innerWidth}x${vh}`,
+            'photosRect.top': photosRect.top.toFixed(2),
+            'photosRect.bottom': photosRect.bottom.toFixed(2),
+            'photosRect.height': photosRect.height.toFixed(2),
+            visibleTop: visibleTop.toFixed(2),
+            visibleBottom: visibleBottom.toFixed(2),
+            topSpace: topSpace.toFixed(2),
+            bottomSpace: bottomSpace.toFixed(2),
+            headerHeight: hh.toFixed(2),
+            contactHeight: ch.toFixed(2),
+            headerTop: headerTop.toFixed(2),
+            contactBottom: contactBottom.toFixed(2)
+        });
+    }
+
+    // 挂载到全局以便 photobox 调用
+    window.positionElements = positionElements;
+
+    // 确保在内容加载完成后执行
+    window.addEventListener('load', () => {
+        setTimeout(positionElements, 200);
+    });
+    window.addEventListener('resize', () => {
+        setTimeout(positionElements, 100);
+    });
+
+    // function createSideText() {
+    //     const photos = document.querySelector('.photos');
+    //     const text = '¿ ?\n'.repeat(38); // 重复足够多行
+
+    //     ['left', 'right'].forEach(side => {
+    //         const el = document.createElement('div');
+    //         el.className = `side-text side-text--${side}`;
+    //         el.textContent = text;
+    //         document.body.appendChild(el);
+    //     });
+    // }
+    // createSideText();
+
+    // Index 菜单交互
+    function initIndexMenu() {
+    document.querySelectorAll('.index-menu').forEach(menu => {
+        const trigger = menu.querySelector('.index-trigger');
+        const list = menu.querySelector('.index-list');
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.index-list').forEach(l => {
+                if (l !== list) l.classList.remove('active');
+            });
+            list.classList.toggle('active');
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.index-menu')) {
+            document.querySelectorAll('.index-list').forEach(l => l.classList.remove('active'));
+        }
+    });
+
+    const indexList = document.querySelector('.index-menu--right .index-list');
+    if (indexList) {
+        const seen = new Set();
+        const items = [];
+
+        document.querySelectorAll('.photos_line_photo').forEach(photo => {
+            const name = photo.getAttribute('data-cursor-text');
+            const link = photo.querySelector('a');
+            const href = link ? link.getAttribute('href') : '#';
+
+            if (name && !seen.has(name)) {
+                seen.add(name);
+                items.push({ name, href });
+            }
+        });
+
+        indexList.innerHTML = items.map(item => `
+            <div class="index-item">
+                <a href="${item.href}" target="_blank">${item.name}</a>
+            </div>
+        `).join('');
+    }
+}
+
+initIndexMenu();
+
+document.querySelectorAll('a').forEach(link => {
+    if (!link.hasAttribute('target')) {
+        link.setAttribute('target', '_blank');
+    }
+});
+
+function initInfoPager() {
+        const container = document.getElementById('infoContainer');
+        const pages = container.querySelectorAll('.info-page');
+        let currentPage = 1;
+        const totalPages = pages.length;
+
+        container.addEventListener('click', (e) => {
+            // 点击容器，向下翻页
+            currentPage++;
+            if (currentPage > totalPages) {
+                currentPage = 1; // 循环回第一页
+            }
+
+            // 更新显示
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            pages[currentPage - 1].classList.add('active');
+
+            console.log(`📄 Page ${currentPage}/${totalPages}`);
+        });
+
+        // 也可以用滚轮翻页（可选）
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            
+            if (e.deltaY > 0) {
+                // 向下滚，下一页
+                currentPage++;
+                if (currentPage > totalPages) currentPage = 1;
+            } else {
+                // 向上滚，上一页
+                currentPage--;
+                if (currentPage < 1) currentPage = totalPages;
+            }
+
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            pages[currentPage - 1].classList.add('active');
+
+            console.log(`📄 Page ${currentPage}/${totalPages}`);
+        });
+    }
+
+    initInfoPager();
+
+    function initMobileInfo() {
+        const trigger = document.querySelector('.info-mobile-trigger');
+        const content = document.querySelector('.info-mobile-content');
+        
+        if (!trigger || !content) return;
+        
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            content.classList.toggle('active');
+        });
+        
+        // 点击其他地方关闭菜单
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.info-mobile')) {
+                content.classList.remove('active');
+            }
+        });
+
+        // 翻页功能
+        const pages = content.querySelectorAll('.info-mobile-page');
+        let currentPage = 1;
+        const totalPages = pages.length;
+
+        content.addEventListener('click', (e) => {
+            // 阻止触发关闭
+            e.stopPropagation();
+            
+            currentPage++;
+            if (currentPage > totalPages) {
+                currentPage = 1;
+            }
+
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            pages[currentPage - 1].classList.add('active');
+
+            console.log(`📱 Mobile Page ${currentPage}/${totalPages}`);
+        });
+    }
+
+    initMobileInfo();
+    
+</script>
+
+</html>
